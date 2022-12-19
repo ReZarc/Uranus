@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'blog.apps.BlogConfig',     # Blog 应用
+    'users.apps.UsersConfig',   # User 应用
     'django.contrib.staticfiles',
 ]
 
