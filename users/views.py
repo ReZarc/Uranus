@@ -12,4 +12,5 @@ def loginView(request):
             return HttpResponse('登录成功')
         else:
             return HttpResponse('登录失败')
+
     return render(request, 'users/login.html')
