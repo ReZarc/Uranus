@@ -1,17 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+{% extends 'users/base.html' %}
+
+{% block head %}
     <title>用户登录</title>
-</head>
-<body>
-    <form action="" method="post">
-        {% csrf_token %}
-        <label for="id_username">用户名: </label>
-        <input type="text" name="username" id="id_username">
-        <label for="id_password">密  码: </label>
-        <input type="password" name="password" id="id_password">
-        <input type="submit" value="提交">
-    </form>
-</body>
-</html>
+{% endblock head %}
+{% block content %}
+    <div class="box">
+            <h1 class=" is-uppercase has-text-centered has text-weight-bold">博客
+                <br><span class="tag">登录</span>
+            </h1>
+            <hr class="dropdown-divider">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.errors }}
+                <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="登  录">
+            </form>
+        </div>
+{% endblock content %}

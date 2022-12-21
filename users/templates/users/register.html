@@ -1,0 +1,18 @@
+{% extends 'users/base.html' %}
+{% block head %}
+    <title>用户注册</title>
+{% endblock head %}
+{% block content %}
+    <div class="box">
+        <h1 class="is-uppercase has-text-centered has-text-weight-bold">博客
+            <br><span class="tag">注册</span>
+        </h1>
+        <hr class="dropdown-divider">
+        <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.errors }}
+                <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="注  册">
+        </form>
+    </div>
+{% endblock content %}

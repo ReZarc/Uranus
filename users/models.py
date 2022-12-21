@@ -20,3 +20,21 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.owner.username
+
+
+class EmailVerifyRecord(models.Model):
+    SEND_TYPE_CHOICES = (
+        ('register', '注册'),
+        ('forget', '找回密码')
+    )
+    code = models.CharField('验证码', max_length=6)
+    email = models.EmailField('邮箱', max_length=35)
+    send_type = models.CharField(choices=SEND_TYPE_CHOICES, default='register', max_length=25)
+
+    class Meta:
+        verbose_name = '验证码'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.code
+
