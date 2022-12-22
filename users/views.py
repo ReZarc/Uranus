@@ -5,11 +5,11 @@ from django.contrib.auth.backends import ModelBackend  # 身份验证后端
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
-from .models import EmailVerifyRecord
+from .models import EmailVerifyRecord, UserProfile
 from django.core.mail import send_mail
 import random
 import string
-
+from django.contrib.auth.decorators import login_required
 
 class MyBackend(ModelBackend):
     # 邮箱登录注册
@@ -48,7 +48,7 @@ def loginView(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('/admin')
+                return redirect('users:user_profile')
             else:
                 return HttpResponse('帐号或密码错误')
     context = {'form': form}
@@ -138,3 +138,9 @@ def forget_pwd_url(request, active_code):
             return HttpResponse('修改失败')
     context = {'form': form}
     return render(request, 'users/modifypwd.html', context)
+
+@login_required(login_url='users:login')
+def user_profile(request):
+    user = User.objects.get(username=request.user)
+    context = {'user': user}
+    return render(request, 'users/user_profile.html', context)
