@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from .models import UserProfile
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='用户名', max_length=35, widget=forms.TextInput(attrs={
@@ -76,3 +78,23 @@ class ModifyPwdForm(forms.Form):
     password1 = forms.CharField(label='再次输入密码', min_length=6, widget=forms.PasswordInput(attrs={
         'class': 'input', 'placeholder': '再次输入密码'
     }))
+
+
+class UserForm(forms.ModelForm):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'class': 'input'
+    }))
+    birth = forms.DateField(widget=forms.DateInput(attrs={
+        'class': 'input'
+    }))
+
+    class Meta:
+        model = User
+        fields = ('email',)
+
+
+# 编辑个人信息表单
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ('nickName', 'desc', 'birth', 'gender', 'image')

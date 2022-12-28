@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',  # Blog 应用
     'users.apps.UsersConfig',  # User 应用
     'django.contrib.staticfiles',
+    'mptt',
+    'ckeditor5',
 ]
 
 MIDDLEWARE = [

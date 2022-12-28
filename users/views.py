@@ -1,15 +1,16 @@
 from django.shortcuts import render, HttpResponse, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend  # 身份验证后端
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
-from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm
+from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UserForm, UserProfileForm
 from .models import EmailVerifyRecord, UserProfile
 from django.core.mail import send_mail
 import random
 import string
 from django.contrib.auth.decorators import login_required
+
 
 class MyBackend(ModelBackend):
     # 邮箱登录注册
@@ -139,8 +140,51 @@ def forget_pwd_url(request, active_code):
     context = {'form': form}
     return render(request, 'users/modifypwd.html', context)
 
+
 @login_required(login_url='users:login')
 def user_profile(request):
     user = User.objects.get(username=request.user)
     context = {'user': user}
     return render(request, 'users/user_profile.html', context)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('users:login')
+
+
+@login_required(login_url='users:login')
+def editor_users(request):
+    """ 编辑用户信息 """
+    user = User.objects.get(id=request.user.id)
+    if request.method == "POST":
+        try:
+            userprofile = user.userprofile
+            form = UserForm(request.POST, instance=user)   # 默认显示原有数据  保存加修改
+            user_profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)  # 向表单填充默认数据
+            # UserProfile与User 是一对一的关系，默认没有数据，注册成功后才会在个人中心设置信息
+            # 第一次登录应当是空表单，如果设置了数据以后编辑时应当是修改，应该要默认显示所有的数据
+            if form.is_valid() and user_profile_form.is_valid():
+                form.save()
+                user_profile_form.save()
+                return redirect('users:user_profile')
+        except UserProfile.DoesNotExist:   # 这里发生错误说明userprofile无数据
+            form = UserForm(request.POST, instance=user)    # 默认显示原有数据  保存加修改
+            user_profile_form = UserProfileForm(request.POST, request.FILES)  # 空表单，直接获取空表单的数据保存
+            if form.is_valid() and user_profile_form.is_valid():
+                form.save()
+                # commit=False 先不保存，先把数据放在内存中，然后再重新给指定的字段赋值添加进去，提交保存新的数据
+                new_user_profile = user_profile_form.save(commit=False)
+                new_user_profile.owner = request.user
+                new_user_profile.save()
+
+                return redirect('users:user_profile')
+    else:
+        try:
+            userprofile = user.userprofile
+            form = UserForm(instance=user)
+            user_profile_form = UserProfileForm(instance=userprofile)
+        except UserProfile.DoesNotExist:
+            form = UserForm(instance=user)
+            user_profile_form = UserProfileForm()  # 显示空表单
+    return render(request, 'users/editor_users.html', locals())
