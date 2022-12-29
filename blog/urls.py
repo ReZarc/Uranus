@@ -9,5 +9,6 @@ urlpatterns = [
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     path('search/', views.search, name='search'),
     path('archives/<int:year>/<int:month>/', views.archives, name='archives'),
-    # path('release/', views.release, name='release')
+    path('comment/<int:post_id>/', views.post_comment, name='post_comment'),
+    path('release/', views.post_release, name='post_release')
 ]
