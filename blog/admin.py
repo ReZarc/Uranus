@@ -1,12 +1,12 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Category, Post, Tag, Sidebar
+from .models import Category, Post, Tag, Sidebar, Comment
 
 admin.site.register(Category)
 admin.site.register(Tag)
 admin.site.register(Sidebar)
-
+admin.site.register(Comment)
 
 class PostAdmin(admin.ModelAdmin):
     """ 文章详情管理 """

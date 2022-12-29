@@ -6,5 +6,18 @@
 
 {% block body %}
     <h1 class="has-text-centered">发布文章</h1>
-    <textarea id="TextArea1" cols="20" rows="2" class="ckeditor"></textarea>
+    {% if user.is_authenticated %}
+        <form action="{% url 'blog:post_release' %}" method="post">
+                {% csrf_token %}
+                {{ form.media }}    {# 这里不行 #}
+                {{ form.body }}
+                <div class="has-text-centered">
+                    <input type="submit" style="margin-top: 1em" class="button is-link" value="发表">
+                </div>
+        </form>
+    {% else %}
+        <h5 class="row justify-content-center">
+            请<a href="{% url 'users:login' %}">登录</a>后发表
+        </h5>
+    {% endif %}
 {% endblock %}

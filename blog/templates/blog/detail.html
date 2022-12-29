@@ -34,6 +34,35 @@
 </div>
 
 <div class="box">
-    <textarea cols="140" rows="5" class="ckeditor"></textarea>
+    {% if user.is_authenticated %}
+
+        <form action="{% url 'blog:post_comment' post.id %}" method="post">
+                {% csrf_token %}
+                {{ comment_form.media }}
+                {{ comment_form.body }}
+                <input type="submit" style="margin-top: 1em" class="button is-link" value="评论">
+        </form>
+    {% else %}
+        <h5 class="row justify-content-center">
+            请<a href="{% url 'users:login' %}">登录</a>后回复
+        </h5>
+    {% endif %}
+</div>
+<div class="box">
+    <h4>共有{{ comments.count }}条评论</h4>
+    <div>
+        {% for comment in comments %}
+            <hr>
+            <p>
+                <strong style="color: pink">
+                    {{ comment.user }}
+                </strong> 于
+                <span style="color: green">
+                    {{ comment.created }}
+                </span> 评论：
+            </p>
+            <div id="comment_elem_{{ comment.id }}">{{ comment.body|safe }}</div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

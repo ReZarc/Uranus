@@ -40,9 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'blog.apps.BlogConfig',  # Blog 应用
     'users.apps.UsersConfig',  # User 应用
+    # 'comment.apps.CommentConfig',
     'django.contrib.staticfiles',
     'mptt',
-    'ckeditor5',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [

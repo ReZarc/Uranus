@@ -2,10 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property  # 缓存装饰器
 from django.template.loader import render_to_string  # 渲染模板
+from django.db import models
+import uuid
+from ckeditor.fields import RichTextField
+from mptt.models import MPTTModel, TreeForeignKey
+from users.models import User
+
 
 # Create your models here.
-
-
 class Category(models.Model):
     """ 博客的分类模型 """
     name = models.CharField(max_length=32, verbose_name="分类名称")
@@ -41,24 +45,12 @@ class Post(models.Model):
     title = models.CharField(max_length=61, verbose_name="文章标题")
     desc = models.TextField(max_length=200, blank=True, default='', verbose_name="文章描述")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="分类")
-    content = models.TextField(verbose_name="文章详情")
+    content = RichTextField()
     tags = models.ForeignKey(Tag, blank=True, null=True, on_delete=models.CASCADE, verbose_name="文章标签")
     is_hot = models.BooleanField(default=False, verbose_name="是否热门")  # 手动热门推荐
     pv = models.IntegerField(default=0, verbose_name="浏览量")  # 浏览量
     add_date = models.DateTimeField(auto_now_add=True, verbose_name="添加时间")
     pub_date = models.DateTimeField(auto_now=True, verbose_name="修改时间")
-
-    class Media:
-        css = {
-            'all': ('ckeditor5/cked.css',)
-        }
-
-        js = (
-            'https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js',
-            'ckeditor5/ckeditor.js',
-            'ckeditor5/translations/zh.js',
-            'ckeditor5/config.js'
-        )
 
     class Meta:
         verbose_name = "文章"
@@ -137,5 +129,18 @@ class Sidebar(models.Model):
 
             return self.content  # 在侧边栏直接使用这里的html，模板中必须使用safe过滤器去渲染HTML
 
+
+class Comment(models.Model):  # 博文评论
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    body = RichTextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name_plural = '评论'
+
+    def __str__(self):
+        return self.body[:20]
 
 
