@@ -1,9 +1,9 @@
-{% extends 'users/base.html' %}
+{% extends 'blog/base.html' %}
 {% block head %}
-    <title>修改密码</title>
+修改密码
 {% endblock head %}
 
-{% block content %}
+{% block body %}
     <div class="box">
         <h1 class=" is-uppercase has-text-centered has text-weight-bold">博客
             <br><span class="tag">修改密码</span>
@@ -14,6 +14,13 @@
             {{ form.as_p }}
             {{ form.errors }}
             <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="提  交">
+            {% if messages %}
+                <script>
+                    {% for msg in messages %}
+                        alert('{{ msg.message }}');
+                    {% endfor %}
+                </script>
+            {% endif %}
         </form>
     </div>
-{% endblock content %}
+{% endblock  %}

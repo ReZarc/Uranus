@@ -11,6 +11,13 @@
     <div class="content">
         {{ post.content|safe }}
     </div>
+    {% if post.owner_id == request.user.id %}
+        <span class="is-size-7">
+            <a href="{% url 'blog:post_edit' post.id %}">修改</a>
+            <a href="{% url 'blog:post_delete' post.id %}">删除</a>
+        </span>
+    {% endif %}
+
 </div>
 
 <div class="box">
@@ -60,6 +67,16 @@
                 <span style="color: green">
                     {{ comment.created }}
                 </span> 评论：
+                {% if comment.user_id == request.user.id %}
+                    <span class="is-size-7">
+                        <a href="{% url 'blog:comment_delete' comment.id %}">删除</a>
+                    </span>
+                {% endif %}
+                {% if post.owner_id == request.user.id %}
+                    <span class="is-size-7">
+                        <a href="{% url 'blog:comment_delete' comment.id %}">删除</a>
+                    </span>
+                {% endif %}
             </p>
             <div id="comment_elem_{{ comment.id }}">{{ comment.body|safe }}</div>
         {% endfor %}

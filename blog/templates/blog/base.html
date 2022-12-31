@@ -13,6 +13,7 @@
     <script src="{% static 'ckeditor5/ckeditor.js' %}"></script>
     <script src="{% static 'ckeditor5/translations/zh.js' %}"></script>
     <script src="{% static 'ckeditor5/config.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/layui/css/layui.css' %}" />
     <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
 </head>
 
@@ -38,9 +39,9 @@
                         <a class="navbar-item" href="/">
                             首页
                         </a>
-{#                        <a class="navbar-item" href="{% url 'blog:release' %}">#}
-{#                            发布#}
-{#                        </a>#}
+                        <a class="navbar-item" href="{% url 'blog:post_release' %}">
+                            发布
+                        </a>
     					{% get_category_list as category_list %}
     						{% for category in category_list %}
     						<a class="navbar-item" href="{% url 'blog:category_list' category.id %}">

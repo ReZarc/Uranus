@@ -5,10 +5,9 @@ from ckeditor.fields import RichTextField
 
 class PostForm(forms.ModelForm):
 
-    content = RichTextField()
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['title', 'desc', 'content', 'category']
 
 
 class CommentForm(forms.ModelForm):  # 文章评论表单

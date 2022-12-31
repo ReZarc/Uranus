@@ -1,0 +1,47 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+    我的文章
+{% endblock %}
+    {% block section %}
+    {% block archives %}
+    {% endblock  %}
+    {% if page_obj %}
+    {% for post in page_obj %}
+    <div class="box">
+        <h1 class="is-size-5 has-text-weight-bold">
+            <a href="{% url 'blog:post_detail' post.id %}"> {{ post.title }}</a>
+        </h1>
+        <div class=" is-size-7 has-text-grey-light pt-1 pb-1">
+            <span class="mr-3">作者：{{ post.owner }}</span> <span>发布日期：{{ post.add_date }}</span>
+        </div>
+        <!-- https://docs.djangoproject.com/zh-hans/3.2/ref/templates/builtins/#truncatechars  官方文档 -->
+        <p class="mt-3">{{ post.desc|truncatechars:50 }}</p>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="box">
+        <p class="has-text-danger">文章不存在！</p>
+    </div>
+    {% endif %}
+    <!--  文档： https://docs.djangoproject.com/zh-hans/3.2/ref/paginator/#django.core.paginator.Paginator -->
+    {% if page_obj %}
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+        {% if page_obj.has_previous %}
+            <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+        <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Next page</a>
+        {% endif %}
+        <ul class="pagination-list">
+        {% if page_obj.has_previous %}
+            <li><a class="pagination-link" aria-label="Goto page 45" href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a></li>
+        {% endif %}
+            <li><a class="pagination-link is-current" aria-label="Page {{ page_obj.number }}" aria-current="page" href='?page={{ page_obj.number }}'>{{ page_obj.number }}</a></li>
+        {% if page_obj.has_next %}
+            <li><a class="pagination-link" href="?page={{ page_obj.next_page_number }}" aria-label="Goto page {{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a></li>
+        {% endif %}
+        </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

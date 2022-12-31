@@ -5,16 +5,28 @@
 {% endblock %}
 
 {% block body %}
-    <h1 class="has-text-centered">发布文章</h1>
+    <h6 class="has-text-centered">发布文章</h6>
     {% if user.is_authenticated %}
-        <form action="{% url 'blog:post_release' %}" method="post">
+        <div class="has-text-centered">
+            <form class=action="{% url 'blog:post_release' %}" method="post">
                 {% csrf_token %}
-                {{ form.media }}    {# 这里不行 #}
-                {{ form.body }}
-                <div class="has-text-centered">
-                    <input type="submit" style="margin-top: 1em" class="button is-link" value="发表">
-                </div>
-        </form>
+                {% for field in form %}
+                  <div class="field is-horizontal">
+                      <div class="field-label is-normal">
+                        <label for="{{ field.id_for_label }}" class="label">{{ field.label }}</label>
+                      </div>
+                      <div class="field-body">
+                        <div class="field">
+                          <div class="control">
+                             {{ field }}
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                {% endfor %}
+                <input type="submit" style="margin-top: 1em" class="button is-link" value="发表">
+            </form>
+        </div>
     {% else %}
         <h5 class="row justify-content-center">
             请<a href="{% url 'users:login' %}">登录</a>后发表

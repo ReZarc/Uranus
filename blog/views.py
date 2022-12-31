@@ -15,7 +15,7 @@ def index(request):
     # 首页
     post_list = Post.objects.all()  # 查询到所有的文章,queryset
     # 分页方法
-    paginator = Paginator(post_list, 2)  # 第二个参数2代表每页显示几个
+    paginator = Paginator(post_list, 5)  # 第二个参数2代表每页显示几个
     page_number = request.GET.get('page')  # http://assas.co/?page=1 (页码)
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj}
@@ -26,12 +26,20 @@ def category_list(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     # 获取当前分类下的所有文章
     posts = category.post_set.all()
-    paginator = Paginator(posts, 2)  # 第二个参数2代表每页显示几个
+    paginator = Paginator(posts, 5)  # 第二个参数2代表每页显示几个
     page_number = request.GET.get('page')  # http://assas.co/?page=1 (页码)
     page_obj = paginator.get_page(page_number)
     context = {'category': category, 'page_obj': page_obj}
     return render(request, 'blog/list.html', context)
 
+
+def my_post_list(request):
+    posts = Post.objects.filter(owner_id=request.user.id)
+    paginator = Paginator(posts, 5)  # 第二个参数2代表每页显示几个
+    page_number = request.GET.get('page')  # http://assas.co/?page=1 (页码)
+    page_obj = paginator.get_page(page_number)
+    context = {'page_obj': page_obj}
+    return render(request, 'blog/my_post.html', context)
 
 def post_detail(request, post_id):
     # 文章详情页
@@ -78,27 +86,12 @@ def search(request):
 def archives(request, year, month):
     # 文章归档列表页
     post_list = Post.objects.filter(add_date__year=year, add_date__month=month)
-    paginator = Paginator(post_list, 2)  # 第二个参数2代表每页显示几个
+    paginator = Paginator(post_list, 5)  # 第二个参数5代表每页显示几个
     page_number = request.GET.get('page')  # http://assas.co/?page=1 (页码)
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj, 'year': year, 'month': month}
     return render(request, 'blog/archives_list.html', context)
 
-
-# def register(request):
-#     if request.method != 'POST':
-#         form = RegisterForm()
-#     else:
-#         form = RegisterForm(request.POST)
-#         if form.is_valid():
-#             new_user = form.save(commit=False)
-#             new_user.set_password(form.cleaned_data.get('password'))
-#             # new_user.username = form.cleaned_data.get('email')
-#             new_user.save()
-#             send_register_email(form.cleaned_data.get('email'), 'register')
-#             return HttpResponse('注册成功')
-#     context = {'form': form}
-#     return render(request, 'users/register.html', context)
 
 @login_required(login_url='users:login')
 def post_comment(request, post_id, parent_comment_id=None):
@@ -130,12 +123,44 @@ def post_release(request):
         form = PostForm(request.POST)
         if form.is_valid():
             new_post = form.save(commit=False)
-            new_post.user = request.user
+            new_post.owner = request.user
             new_post.save()
-            return redirect('/')
-        else:
-            return HttpResponse('内容有误，请重新填写')
+            post_id = new_post.id
+            return redirect('blog:post_detail', post_id)
     else:
         form = PostForm()
     context = {'form': form}
     return render(request, 'blog/release.html', context)
+
+
+@login_required(login_url='users:login')
+def post_edit(request, post_id):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            Post.objects.filter(id=post_id).update(
+                title=post.title,
+                desc=post.desc,
+                category_id=post.category.id,
+                content=post.content
+            )
+            return redirect('blog:post_detail', post_id)
+    else:
+        form = PostForm()
+    context = {'form': form}
+    return render(request, 'blog/edit.html', context)
+
+
+@login_required(login_url='users:login')
+def post_delete(request, post_id):
+    Post.objects.filter(id=post_id).delete()
+    return redirect('/')
+
+
+@login_required(login_url='users:login')
+def comment_delete(request, comment_id):
+    comment = Comment.objects.get(id=comment_id)
+    post_id = comment.post_id
+    Comment.objects.filter(id=comment_id).delete()
+    return redirect('blog:post_detail', post_id)

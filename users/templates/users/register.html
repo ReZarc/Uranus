@@ -1,8 +1,8 @@
-{% extends 'users/base.html' %}
+{% extends 'blog/base.html' %}
 {% block head %}
-    <title>用户注册</title>
+    用户注册
 {% endblock head %}
-{% block content %}
+{% block body %}
     <div class="box">
         <h1 class="is-uppercase has-text-centered has-text-weight-bold">博客
             <br><span class="tag">用户注册</span>
@@ -12,7 +12,16 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 {{ form.errors }}
-                <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="注  册">
+                <div class="has-text-centered">
+                    <input type="submit" style="margin-top: 1em" class="button is-link" value="注  册">
+                </div>
         </form>
+        {% if messages %}
+            <script>
+                {% for msg in messages %}
+                    alert('{{ msg.message }}');
+                {% endfor %}
+            </script>
+        {% endif %}
     </div>
-{% endblock content %}
+{% endblock  %}

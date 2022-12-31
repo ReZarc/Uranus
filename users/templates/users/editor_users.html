@@ -1,42 +1,96 @@
-{% extends 'users/user_profile.html' %}
+{% extends 'blog/base.html' %}
 
 {% block title %}
-<li class="is-active"><a>编辑信息</a></li>
+    编辑信息
 {% endblock  %}
 
-{% block content %}
-<!-- 官方文档： https://docs.djangoproject.com/zh-hans/3.2/topics/forms/ -->
-<form action="{% url 'users:editor_users' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="field is-horizontal">
-        <div class="field-label is-normal">
-          <label for="{{ form.email.id_for_label }}" class="label">{{ form.email.label }}</label>
-        </div>
-        <div class="field-body">
-          <div class="field">
-            <div class="control">
-                {{ form.email }}
-            </div>
-          </div>
-        </div>
-    </div>
-      {% for field in user_profile_form %}
-      <div class="field is-horizontal">
-          <div class="field-label is-normal">
-            <label for="{{ field.id_for_label }}" class="label">{{ field.label }}</label>
-          </div>
-          <div class="field-body">
-            <div class="field">
-              <div class="control">
-                 {{ field }}
-              </div>
-            </div>
-          </div>
-      </div>
-      {% endfor %}
-      <input class=" button is-primary is-pulled-right" type="submit" value="保存修改">
-      <div class=" is-clearfix"></div>
+{% block body %}
+    <section class="section">
+        <div class="container">
 
-  </form>
+            <div class="columns">
+                <div class="column is-2">
+                    <div class="card">
+                        <header class="card-header">
+                            <p class="card-header-title">个人中心</p>
+                            <a href="" class="card-header-icon" aria-label="more options">
+                                <span class="icon">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </span>
+                            </a>
+                        </header>
+                        <div class="card-content menu">
+                            <ul class="content menu-list">
+                                <li><a href="{% url 'users:user_profile' %}">个人信息</a></li>
+                                <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
+
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="card">
+                            <header class="card-header">
+                                <p class="card-header-title">内容管理</p>
+                                <a href="#" class="card-header-icon" aria-label="more options">
+                                    <span class="icon">
+                                        <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                    </span>
+                                </a>
+                            </header>
+                            <div class="card-content menu">
+                                <ul class="content menu-list">
+                                    <li><a href="{% url 'blog:post_release' %}">添加文章</a></li>
+                                    <li><a href="{% url 'blog:my_post' %}">已发布</a></li>
+                                </ul>
+                            </div>
+
+                    </div>
+                </div>
+                <div class="column is-10">
+                    <div class="box is-radiusless is-shadowless">
+
+                        <div class="tabs">
+                            <ul>
+                              <li class="is-active"><a>编辑信息</a></li>
+                            </ul>
+                        </div>
+
+
+                    <form action="{% url 'users:editor_users' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="field is-horizontal">
+                            <div class="field-label is-normal">
+                              <label for="{{ form.email.id_for_label }}" class="label">{{ form.email.label }}</label>
+                            </div>
+                            <div class="field-body">
+                              <div class="field">
+                                <div class="control">
+                                    {{ form.email }}
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                          {% for field in user_profile_form %}
+                          <div class="field is-horizontal">
+                              <div class="field-label is-normal">
+                                <label for="{{ field.id_for_label }}" class="label">{{ field.label }}</label>
+                              </div>
+                              <div class="field-body">
+                                <div class="field">
+                                  <div class="control">
+                                     {{ field }}
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          {% endfor %}
+                          <input class=" button is-primary is-pulled-right" type="submit" value="保存修改">
+                          <div class=" is-clearfix"></div>
+                      </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
 {% endblock %}
-    

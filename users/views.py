@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -49,9 +50,10 @@ def loginView(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('users:user_profile')
+                return redirect('/')
             else:
-                return HttpResponse('帐号或密码错误')
+                messages.error(request, '帐号或密码错误')
+                return redirect('users:login')
     context = {'form': form}
     return render(request, 'users/login.html', context)
 
@@ -101,7 +103,8 @@ def register(request):
             # new_user.username = form.cleaned_data.get('email')
             new_user.save()
             send_register_email(form.cleaned_data.get('email'), 'register')
-            return HttpResponse('注册成功')
+            messages.error(request, '注册成功')
+            return redirect('/')
     context = {'form': form}
     return render(request, 'users/register.html', context)
 
@@ -116,9 +119,11 @@ def forget_pwd(request):
             exists = User.objects.filter(email=email).exists()
             if exists:
                 send_register_email(email, 'forget')
-                return HttpResponse('邮件已经发送，请查收')
+                messages.error(request, '邮件已经发送，请查收')
+                return redirect('users:forget_pwd')
             else:
-                return HttpResponse('邮箱未注册')
+                messages.error(request, '邮箱未注册')
+                return redirect('users:forget_pwd')
     context = {'form': form}
     return render(request, 'users/forget_pwd.html', context)
 
@@ -134,9 +139,29 @@ def forget_pwd_url(request, active_code):
             user = User.objects.get(email=email)
             user.password = make_password(form.cleaned_data.get('password'))
             user.save()
-            return HttpResponse('修改成功')
+            messages.error(request, '修改成功')
+            return redirect('/')
         else:
-            return HttpResponse('修改失败')
+            messages.error(request, '修改失败')
+            return redirect('users:forget_pwd_url')
+    context = {'form': form}
+    return render(request, 'users/modifypwd.html', context)
+
+
+def modify_pwd(request):
+    if request.method != 'POST':
+        form = ModifyPwdForm()
+    else:
+        form = ModifyPwdForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(id=request.user.id)
+            user.password = make_password(form.cleaned_data.get('password'))
+            user.save()
+            messages.error(request, '修改成功')
+            return redirect('/')
+        else:
+            messages.error(request, '修改失败')
+            return redirect('users:forget_pwd_url')
     context = {'form': form}
     return render(request, 'users/modifypwd.html', context)
 
@@ -150,7 +175,7 @@ def user_profile(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('users:login')
+    return redirect('/')
 
 
 @login_required(login_url='users:login')

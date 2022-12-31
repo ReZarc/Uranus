@@ -45,7 +45,8 @@ class Post(models.Model):
     title = models.CharField(max_length=61, verbose_name="文章标题")
     desc = models.TextField(max_length=200, blank=True, default='', verbose_name="文章描述")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="分类")
-    content = RichTextField()
+    content = models.TextField(max_length=20000, blank=True, default='', verbose_name="内容")
+    # content = RichTextField()
     tags = models.ForeignKey(Tag, blank=True, null=True, on_delete=models.CASCADE, verbose_name="文章标签")
     is_hot = models.BooleanField(default=False, verbose_name="是否热门")  # 手动热门推荐
     pv = models.IntegerField(default=0, verbose_name="浏览量")  # 浏览量
