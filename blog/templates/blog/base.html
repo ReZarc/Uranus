@@ -42,6 +42,9 @@
                         <a class="navbar-item" href="{% url 'blog:post_release' %}">
                             发布
                         </a>
+                        <a class="navbar-item" href="{% url 'blog:my_post' %}">
+                            我的
+                        </a>
     					{% get_category_list as category_list %}
     						{% for category in category_list %}
     						<a class="navbar-item" href="{% url 'blog:category_list' category.id %}">

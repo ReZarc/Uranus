@@ -71,11 +71,12 @@
                     <span class="is-size-7">
                         <a href="{% url 'blog:comment_delete' comment.id %}">删除</a>
                     </span>
-                {% endif %}
-                {% if post.owner_id == request.user.id %}
+                {% else %}
+                    {% if post.owner_id == request.user.id %}
                     <span class="is-size-7">
                         <a href="{% url 'blog:comment_delete' comment.id %}">删除</a>
                     </span>
+                    {% endif %}
                 {% endif %}
             </p>
             <div id="comment_elem_{{ comment.id }}">{{ comment.body|safe }}</div>

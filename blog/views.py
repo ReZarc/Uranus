@@ -41,6 +41,7 @@ def my_post_list(request):
     context = {'page_obj': page_obj}
     return render(request, 'blog/my_post.html', context)
 
+
 def post_detail(request, post_id):
     # 文章详情页
     post = get_object_or_404(Post, id=post_id)
@@ -137,7 +138,10 @@ def post_release(request):
 def post_edit(request, post_id):
     if request.method == 'POST':
         form = PostForm(request.POST)
-        if form.is_valid():
+        user_id = Post.objects.get(id=post_id).owner_id
+        if request.user.id != user_id:
+            redirect('blog:post_detail', post_id)
+        elif form.is_valid():
             post = form.save(commit=False)
             Post.objects.filter(id=post_id).update(
                 title=post.title,
@@ -154,7 +158,9 @@ def post_edit(request, post_id):
 
 @login_required(login_url='users:login')
 def post_delete(request, post_id):
-    Post.objects.filter(id=post_id).delete()
+    user = Post.objects.get(id=post_id).owner_id
+    if request.user.id == user:
+        Post.objects.filter(id=post_id).delete()
     return redirect('/')
 
 
@@ -164,3 +170,8 @@ def comment_delete(request, comment_id):
     post_id = comment.post_id
     Comment.objects.filter(id=comment_id).delete()
     return redirect('blog:post_detail', post_id)
+
+
+# def comment_sidebar(request):
+#     comment = Comment.objects.all()
+#     return render(request, 'blog/sidebar/comment.html')

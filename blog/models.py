@@ -7,6 +7,7 @@ import uuid
 from ckeditor.fields import RichTextField
 from mptt.models import MPTTModel, TreeForeignKey
 from users.models import User
+from markdown import markdown
 
 
 # Create your models here.
