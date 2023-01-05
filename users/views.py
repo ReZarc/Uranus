@@ -34,7 +34,8 @@ def active_user(request, active_code):
             user.is_staff = True
             user.save()
     else:
-        return HttpResponse('链接有误')
+        messages.error(request, '链接有误')
+        return redirect('/')
     return redirect('users:login')
 
 

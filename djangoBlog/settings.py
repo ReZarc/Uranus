@@ -131,8 +131,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_HOST = 'smtp.qq.com'    # 发送邮件的服务器主机
-EMAIL_HOST_USER = 'rezark@qq.com'  # 自己的邮箱
-EMAIL_HOST_PASSWORD = 'Kxy20020213' # 自己的密码
+EMAIL_HOST_USER = 'rezarc@qq.com'  # 自己的邮箱
+EMAIL_HOST_PASSWORD = 'xxx' # 自己的HOST密码
 EMAIL_PORT = 465                    # 服务器端口
 EMAIL_USE_SSL = True                # 是否使用隐式安全链接
 
