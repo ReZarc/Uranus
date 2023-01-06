@@ -155,10 +155,13 @@ def modify_pwd(request):
     else:
         form = ModifyPwdForm(request.POST)
         if form.is_valid():
-            user = User.objects.get(id=request.user.id)
-            user.password = make_password(form.cleaned_data.get('password'))
-            user.save()
-            messages.error(request, '修改成功')
+            if form.cleaned_data.get('password') == form.cleaned_data.get('password1'):
+                user = User.objects.get(id=request.user.id)
+                user.password = make_password(form.cleaned_data.get('password'))
+                user.save()
+                messages.error(request, '修改成功')
+            else :
+                messages.error(request, '两次密码不相同')
             return redirect('/')
         else:
             messages.error(request, '修改失败')
@@ -167,10 +170,14 @@ def modify_pwd(request):
     return render(request, 'users/modifypwd.html', context)
 
 
-@login_required(login_url='users:login')
-def user_profile(request):
-    user = User.objects.get(username=request.user)
-    context = {'user': user}
+def user_profile(request, user_id):
+    user = User.objects.get(id=user_id)
+    is_profile = len(UserProfile.objects.filter(owner_id=user_id))
+    if is_profile:
+        user_profile = UserProfile.objects.get(owner_id=user_id)
+    else :
+        user_profile = []
+    context = {'user': user, 'user_profile': user_profile}
     return render(request, 'users/user_profile.html', context)
 
 

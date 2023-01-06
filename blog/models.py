@@ -44,10 +44,10 @@ class Post(models.Model):
     """ 文章 """
     owner = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="作者")
     title = models.CharField(max_length=61, verbose_name="文章标题")
-    desc = models.TextField(max_length=200, blank=True, default='', verbose_name="文章描述")
+    desc = models.CharField(max_length=200, blank=True, default='', verbose_name="文章描述")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="分类")
-    content = models.TextField(max_length=20000, blank=True, default='', verbose_name="内容")
-    # content = RichTextField()
+    content = models.TextField(max_length=2000, blank=True, default='', verbose_name="内容")
+    # content = RichTextField(max_length=20000, blank=True, default='', verbose_name="内容")
     tags = models.ForeignKey(Tag, blank=True, null=True, on_delete=models.CASCADE, verbose_name="文章标签")
     is_hot = models.BooleanField(default=False, verbose_name="是否热门")  # 手动热门推荐
     pv = models.IntegerField(default=0, verbose_name="浏览量")  # 浏览量
@@ -146,3 +146,13 @@ class Comment(models.Model):  # 博文评论
         return self.body[:20]
 
 
+class Favorite(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorite')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='favorite')
+
+    class Meta:
+        verbose_name = "收藏"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.post.title

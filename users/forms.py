@@ -95,6 +95,7 @@ class UserForm(forms.ModelForm):
 
 # 编辑个人信息表单
 class UserProfileForm(forms.ModelForm):
+
     class Meta:
         model = UserProfile
         fields = ('nickName', 'desc', 'birth', 'gender', 'image')

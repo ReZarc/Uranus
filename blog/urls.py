@@ -14,5 +14,9 @@ urlpatterns = [
     path('post_edit/<int:post_id>/', views.post_edit, name='post_edit'),
     path('delete/<int:post_id>/', views.post_delete, name='post_delete'),
     path('comment_delete/<int:comment_id>/', views.comment_delete, name='comment_delete'),
-    path('my_post/', views.my_post_list, name='my_post')
+    path('my_post/', views.my_post_list, name='my_post'),
+    path('favorite_add/<int:post_id>/', views.favorite_add, name='favorite_add'),
+    path('favorite_del/<int:post_id>/', views.favorite_del, name='favorite_del'),
+    path('my_favorite/', views.my_favorite, name='my_favorite'),
+    path('post_list/<int:user_id>/', views.post_list, name='post_list'),
 ]

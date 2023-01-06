@@ -9,6 +9,18 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ['title', 'desc', 'content', 'category']
 
+    class Media:
+        css = {
+            'all': ('ckeditor5/cked.css',)
+        }
+
+        js = (
+            'https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js',
+            'ckeditor5/ckeditor.js',
+            'ckeditor5/translations/zh.js',
+            # 'ckeditor5/config.js'
+        )
+
 
 class CommentForm(forms.ModelForm):  # 文章评论表单
 

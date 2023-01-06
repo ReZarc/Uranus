@@ -1,16 +1,28 @@
 {% extends 'blog/base.html' %}
+
 {% block title %}
-    个人中心
+    {% if user_profile %}
+        {{ user_profile.nickName }}的个人空间
+    {% else %}
+        {{ user.username }}的个人空间
+    {% endif %}
 {% endblock %}
+
 {% block body %}
     <section class="section">
         <div class="container">
 
             <div class="columns">
-                <div class="column is-2">
+                <div class="column is-3">
                     <div class="card">
                         <header class="card-header">
-                            <p class="card-header-title">个人中心</p>
+                            <p class="card-header-title">
+                            {% if is_profile %}
+                                {{ user_profile.nickName }}的个人空间
+                            {% else %}
+                                {{ user.username }}的个人空间
+                            {% endif %}
+                            </p>
                             <a href="" class="card-header-icon" aria-label="more options">
                                 <span class="icon">
                                     <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -19,14 +31,43 @@
                         </header>
                         <div class="card-content menu">
                             <ul class="content menu-list">
-                                <li><a href="{% url 'users:user_profile' %}">个人信息</a></li>
-                               <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
-
+                                <li><a href="{% url 'users:user_profile' user.id %}">个人信息</a></li>
+                                {% if user.is_authenticated %}
+                                    {% if user.id == request.user.id %}
+                                        <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
+                                    {% else %}
+                                        {% if user.userprofile %}
+                                            {% if user.userprofile.get_gender_display == '男' %}
+                                                <li><a href="{% url 'blog:post_list' user.id %}">他发布的</a></li>
+                                            {% else %}
+                                                {% if user.userprofile.get_gender_display == '女' %}
+                                                    <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
+                                                {% else %}
+                                                    <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if user.userprofile %}
+                                        {% if user.userprofile.get_gender_display == '男' %}
+                                            <li><a href="{% url 'blog:post_list' user.id %}">他发布的</a></li>
+                                        {% else %}
+                                            {% if user.userprofile.get_gender_display == '女' %}
+                                                <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
                             </ul>
                         </div>
 
                     </div>
                     <div class="card">
+                    {% if user.is_authenticated %}
+                        {% if user.id == request.user.id %}
                             <header class="card-header">
                                 <p class="card-header-title">内容管理</p>
                                 <a href="#" class="card-header-icon" aria-label="more options">
@@ -38,10 +79,11 @@
                             <div class="card-content menu">
                                 <ul class="content menu-list">
                                     <li><a href="{% url 'blog:post_release' %}">添加文章</a></li>
-                                    <li><a href="{% url 'blog:my_post' %}">已发布</a></li>
+                                    <li><a href="{% url 'blog:post_list' user.id %}">我发布的</a></li>
                                 </ul>
                             </div>
-
+                        {% endif %}
+                    {% endif %}
                     </div>
                 </div>
                 <div class="column is-10">
@@ -52,8 +94,6 @@
                               <li class="is-active"><a>账号信息</a></li>    {# 替换的地方 #}
                             </ul>
                         </div>
-
-
 
                     {% block content %}
                     <div class="columns is-mobile" style="border-bottom: #ededed solid 1px; padding-bottom: 1rem">
@@ -88,9 +128,13 @@
 
                             </div>
                         </div>
-                        <div class="column is-narrow-mobile">
-                            <a class=" button is-light is-pulled-right" href="{% url 'users:editor_users' %}" style="margin-top: 1.8rem">修改信息</a>
-                        </div>
+                        {% if user.is_authenticated %}
+                            {% if user.id == request.user.id %}
+                                <div class="column is-narrow-mobile">
+                                    <a class=" button is-light is-pulled-right" href="{% url 'users:editor_users' %}" style="margin-top: 1.8rem">修改信息</a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
 
                     <div class="columns" style="padding:1rem 0; ">

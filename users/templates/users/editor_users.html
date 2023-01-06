@@ -21,7 +21,7 @@
                         </header>
                         <div class="card-content menu">
                             <ul class="content menu-list">
-                                <li><a href="{% url 'users:user_profile' %}">个人信息</a></li>
+                                <li><a href="{% url 'users:my_profile' %}">个人信息</a></li>
                                 <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
 
                             </ul>
@@ -73,12 +73,14 @@
                           {% for field in user_profile_form %}
                           <div class="field is-horizontal">
                               <div class="field-label is-normal">
+{#                                <label for="{{ user_profile_form.nickName.id_for_label }}" class="label">{{ user_profile_form.nickName.label }}</label>#}
                                 <label for="{{ field.id_for_label }}" class="label">{{ field.label }}</label>
                               </div>
                               <div class="field-body">
                                 <div class="field">
                                   <div class="control">
                                      {{ field }}
+{#                                      <input type="text" class="form-control" name="nickName">#}
                                   </div>
                                 </div>
                               </div>

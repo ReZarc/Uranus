@@ -1,26 +1,42 @@
 {% extends 'blog/base.html' %}
-{% block head %}
+{% block title %}
 修改密码
-{% endblock head %}
-
+{% endblock %}
+{% block head %}
+    <style type="text/css">
+        .content {
+            position: absolute;
+            /* 垂直居中 */
+            top: 0;
+            bottom: 0;
+            height: 90%;
+            /* 水平居中 */
+            left: 550px;
+            right: 550px;
+            width: 100%;
+            margin: auto;
+            {#background-color: red;#}
+        }
+    </style>
+{% endblock %}
 {% block body %}
-    <div class="box">
-        <h1 class=" is-uppercase has-text-centered has text-weight-bold">博客
-            <br><span class="tag">修改密码</span>
-        </h1>
-        <hr class="dropdown-divider">
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            {{ form.errors }}
-            <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="提  交">
-            {% if messages %}
-                <script>
-                    {% for msg in messages %}
-                        alert('{{ msg.message }}');
-                    {% endfor %}
-                </script>
-            {% endif %}
-        </form>
+    <div class="content">
+        <div class="box column is-4">
+            <h1 class=" is-uppercase has-text-centered">博客源
+                <br><span class="tag">修改密码</span>
+            </h1>
+            <hr class="dropdown-divider">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.errors }}
+                <div class="has-text-centered">
+                    <input type="submit" style="margin-top: 1em" class="button is-link" value="提  交">
+                </div>
+            </form>
+        </div>
     </div>
+
 {% endblock  %}
+{% block footer %}
+{% endblock %}

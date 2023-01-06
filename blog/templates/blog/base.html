@@ -15,9 +15,18 @@
     <script src="{% static 'ckeditor5/config.js' %}"></script>
 {#    <link rel="stylesheet" href="{% static '/layui/css/layui.css' %}" />#}
     <script src="https://cdn.ckeditor.com/ckeditor5/35.4.0/classic/ckeditor.js"></script>
+    {% block head %}
+    {% endblock %}
 </head>
 
 <body>
+    {% if messages %}
+        <script>
+            {% for msg in messages %}
+                alert('{{ msg.message }}');
+            {% endfor %}
+        </script>
+    {% endif %}
         <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
                     <a class="navbar-item" href="/">
@@ -45,6 +54,9 @@
                         <a class="navbar-item" href="{% url 'blog:my_post' %}">
                             我的
                         </a>
+                        <a class="navbar-item" href="{% url 'blog:my_favorite' %}">
+                            收藏
+                        </a>
     					{% get_category_list as category_list %}
     						{% for category in category_list %}
     						<a class="navbar-item" href="{% url 'blog:category_list' category.id %}">
@@ -67,13 +79,15 @@
                         </form>
                         {% block navbar-end %}
                         <div class="navbar-item">
-                            {% if user.is_authenticated %}
-                            <div class="buttons">
-                                <a class="button is-primary" href="{% url 'users:user_profile' %}" target="_blank">
-                                    <strong> {{ request.user.username }}</strong>
-                                </a>
-                                <a href="{% url 'users:logout' %}" class="button is-primary">退出</a>
-                            </div>
+                            {% if request.user.is_authenticated %}
+                                <div class="buttons">
+                                    <a class="button is-primary" href="{% url 'users:user_profile' request.user.id %}" target="_blank">
+                                        <strong>
+                                            {{ request.user.username }}
+                                        </strong>
+                                    </a>
+                                    <a href="{% url 'users:logout' %}" class="button is-primary">退出</a>
+                                </div>
                             {% else %}
                             <div class="buttons">
                                 <a class="button is-primary" href="{% url 'users:register' %}" target="_blank">

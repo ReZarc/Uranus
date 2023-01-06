@@ -136,4 +136,4 @@ EMAIL_HOST_PASSWORD = 'xxx' # 自己的HOST密码
 EMAIL_PORT = 465                    # 服务器端口
 EMAIL_USE_SSL = True                # 是否使用隐式安全链接
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
