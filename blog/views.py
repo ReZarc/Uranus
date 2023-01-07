@@ -3,7 +3,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q, F
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
 from django.contrib import messages
 
 from .forms import CommentForm, PostForm
@@ -72,7 +71,6 @@ def search(request):
     """ 搜索视图 """
     keyword = request.GET.get('keyword')
     users = []
-    post_list = []
     # 没有搜索默认显示所有文章
     if not keyword:
         post_list = Post.objects.all()
@@ -81,7 +79,7 @@ def search(request):
         post_list = Post.objects.filter(
             Q(title__icontains=keyword) | Q(desc__icontains=keyword) | Q(
                 owner__userprofile__nickName__icontains=keyword))  # | Q(content__icontains=keyword))
-        users = User.objects.filter(Q(username__icontains=keyword))
+        users = User.objects.filter(Q(username__icontains=keyword) | Q(userprofile__nickName__icontains=keyword))
     paginator = Paginator(post_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -97,7 +95,7 @@ def archives(request, year, month):
     paginator = Paginator(post_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    context = {'page_obj': page_obj, 'year': year, 'month': month}
+    context = {'page_obj': page_obj, 'year': year, 'month': month, 'count': post_list.count()}
     return render(request, 'blog/archives_list.html', context)
 
 

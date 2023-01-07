@@ -8,7 +8,7 @@
         <div class="box">
             {% for user in users %}
                 <div class="column is-narrow is-size-7 ">
-                <a href="{% url 'users:user_profile' user.id %}">
+                <a href="{% url 'users:user_profile' user.username %}">
                     <figure class="image is-32x32">
                         {% if user.userprofile.image %}     {# 调用是否存在 #}
                             <img class="is-rounded" src="{{ MEDIA_URL }}{{ user.userprofile.image }}">

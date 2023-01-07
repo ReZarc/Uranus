@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend  # 身份验证后端
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
-from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UserForm, UserProfileForm
+from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UserForm, UserProfileForm, CheckPwdForm
 from .models import EmailVerifyRecord, UserProfile, User
 from django.core.mail import send_mail
 import random
@@ -39,7 +39,6 @@ def active_user(request, active_code):
     return redirect('users:login')
 
 
-# Create your views here.
 def loginView(request):
     if request.method != 'POST':  # 是否 POST 格式
         form = LoginForm()  # 空表单
@@ -61,6 +60,24 @@ def loginView(request):
                 return redirect('users:login')
     context = {'form': form}
     return render(request, 'users/login.html', context)
+
+
+def check_pwd(request):
+    if request.method != 'POST':
+        form = CheckPwdForm()
+    else:
+        form = CheckPwdForm(request.POST)
+        if form.is_valid():
+            username = request.user.username
+            password = password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                return redirect('users:modify_pwd')
+            else:
+                messages.error(request, '密码错误')
+                return redirect('users:user_profile', username)
+    context = {'form': form}
+    return render(request, 'users/check_pwd.html', context)
 
 
 def random_str(length=6):
@@ -125,7 +142,7 @@ def forget_pwd(request):
             if exists:
                 send_register_email(email, 'forget')
                 messages.error(request, '邮件已经发送，请查收')
-                return redirect('users:forget_pwd')
+                return redirect('users:login')
             else:
                 messages.error(request, '邮箱未注册')
                 return redirect('users:forget_pwd')
@@ -145,6 +162,7 @@ def forget_pwd_url(request, active_code):
             user.password = make_password(form.cleaned_data.get('password'))
             user.save()
             messages.error(request, '修改成功')
+            EmailVerifyRecord.objects.get(code=active_code).delete()
             return redirect('/')
         else:
             messages.error(request, '修改失败')

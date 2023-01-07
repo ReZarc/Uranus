@@ -1,6 +1,5 @@
 # 在这里自定义模板标签
 # https://docs.djangoproject.com/zh-hans/3.2/howto/custom-template-tags/  官方文档
-from itertools import chain
 from django import template
 from blog.models import Category, Sidebar, Post, Comment
 from users.models import User

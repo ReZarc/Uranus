@@ -70,6 +70,12 @@ class ForgetPwdForm(forms.Form):
     }))
 
 
+class CheckPwdForm(forms.Form):
+    password = forms.CharField(label='输入新密码', min_length=6, widget=forms.PasswordInput(attrs={
+        'class': 'input', 'placeholder': '密码'
+    }))
+
+
 # 修改密码
 class ModifyPwdForm(forms.Form):
     password = forms.CharField(label='输入新密码', min_length=6, widget=forms.PasswordInput(attrs={

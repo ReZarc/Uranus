@@ -34,7 +34,7 @@
                                 <li><a href="{% url 'users:user_profile' user.username %}">个人信息</a></li>
                                 {% if request.user.is_authenticated %}
                                     {% if user.id == request.user.id %}
-                                        <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
+                                        <li><a href="{% url 'users:check_pwd' %}">修改密码</a></li>
                                     {% else %}
                                         {% if user.userprofile %}
                                             {% if user.userprofile.get_gender_display == '男' %}

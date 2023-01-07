@@ -1,0 +1,39 @@
+{% extends 'blog/base.html' %}
+{% block title %}
+    密码验证
+{% endblock %}
+{% block head %}
+    <style type="text/css">
+        .content {
+            position: absolute;
+            /* 垂直居中 */
+            top: 0;
+            bottom: 0;
+            height: 90%;
+            /* 水平居中 */
+            left: 550px;
+            right: 550px;
+            width: 100%;
+            margin: auto;
+            {#background-color: red;#}
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="content">
+        <div class="box column is-4">
+            <h1 class=" is-uppercase has-text-centered has text-weight-bold">博客源
+                <br><span class="tag">密码验证</span>
+            </h1>
+            <hr class="dropdown-divider">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">请输入密码 {{ form.password.errors }}</div>
+                {{ form.password }}
+                <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="验证">
+            </form>
+        </div>
+    </div>
+{% endblock  %}
+{% block footer %}
+{% endblock %}

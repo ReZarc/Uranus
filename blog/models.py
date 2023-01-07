@@ -1,13 +1,10 @@
-from django.db import models
 from django.contrib.auth.models import User
 from django.utils.functional import cached_property  # 缓存装饰器
 from django.template.loader import render_to_string  # 渲染模板
 from django.db import models
-import uuid
 from ckeditor.fields import RichTextField
-from mptt.models import MPTTModel, TreeForeignKey
+from mptt.models import MPTTModel
 from users.models import User
-from markdown import markdown
 
 
 # Create your models here.
