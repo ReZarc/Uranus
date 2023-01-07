@@ -29,14 +29,14 @@
             <hr class="dropdown-divider">
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form.errors }}
+{#                {{ form.errors }}#}
                 <div class="filedWrapper">
-                    <label for="{{ form.username.id_for_label }}">用户名: </label>
+                    <div class="is-size-7 has-text-black-light pt-1 pb-1">用户名 </div>
                     {{ form.username }}
                     {{ form.username.errors }}
                 </div>
                 <div class="filedWrapper">
-                    <label for="{{ form.password.id_for_label }}">密码 : </label>
+                    <div class="is-size-7 has-text-black-light pt-1 pb-1">密码 : </div>
                     {{ form.password }}
                     {{ form.password.errors }}
                 </div>

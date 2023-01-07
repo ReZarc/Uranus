@@ -29,8 +29,10 @@
             <hr class="dropdown-divider">
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                {{ form.errors }}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">请输入注册邮箱 {{ form.email.errors }}</div>
+                {{ form.email }}
+{#                {{ form.as_p }}#}
+{#                {{ form.errors }}#}
                 <input type="submit" style="margin-top: 1em" class="button is-link is-fullwidth" value="发送验证码">
             </form>
         </div>

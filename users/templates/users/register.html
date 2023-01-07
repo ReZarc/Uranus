@@ -28,8 +28,16 @@
             <hr class="dropdown-divider">
             <form action="" method="post">
                 {% csrf_token %}
-                {{ form.as_p }}
-                {{ form.errors }}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">用户名 {{ form.username.errors }}</div>
+                {{ form.username }}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">邮箱 {{ form.email.errors }}</div>
+                {{ form.email }}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">密码 {{ form.password.errors }}</div>
+                {{ form.password }}
+                <div class="is-size-7 has-text-black-light pt-1 pb-1">再次输入密码 {{ form.password1.errors }}</div>
+                {{ form.password1 }}
+{#                <div class="is-size-7 has-text-black-light pt-1 pb-1">{{ form.as_p }}</div>#}
+{#               {{ form.errors }}#}
                 <div class="has-text-centered">
                     <input type="submit" style="margin-top: 1em" class="button is-link" value="注  册">
                 </div>

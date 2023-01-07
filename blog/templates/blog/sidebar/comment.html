@@ -1,0 +1,7 @@
+{% load static category %}
+{% get_comments as comments %}
+{% for comment in comments %}
+    <div class=" is-size-7 has-text-grey-light pt-1 pb-1">
+        <span class="mr-3"><a href="{% url 'users:user_profile' comment.user.username %}"}> {{ comment.user.username }} </a>在<a href="{% url 'blog:post_detail' comment.post_id %}"}> {{ comment.post.title }} </a>评论:</span> <span>{{ comment.body|safe }}</span>
+    </div>
+{% endfor %}

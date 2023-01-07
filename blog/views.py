@@ -71,20 +71,24 @@ def post_detail(request, post_id):
 def search(request):
     """ 搜索视图 """
     keyword = request.GET.get('keyword')
+    users = []
+    post_list = []
     # 没有搜索默认显示所有文章
     if not keyword:
         post_list = Post.objects.all()
     else:
         # 包含查询的方法，用Q对象来组合复杂查询
         post_list = Post.objects.filter(
-            Q(title__icontains=keyword) | Q(desc__icontains=keyword) | Q(content__icontains=keyword))
+            Q(title__icontains=keyword) | Q(desc__icontains=keyword) | Q(
+                owner__userprofile__nickName__icontains=keyword))  # | Q(content__icontains=keyword))
+        users = User.objects.filter(Q(username__icontains=keyword))
     paginator = Paginator(post_list, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
-        'page_obj': page_obj
+        'page_obj': page_obj, 'users': users
     }
-    return render(request, 'blog/index.html', context)
+    return render(request, 'blog/search_list.html', context)
 
 
 def archives(request, year, month):

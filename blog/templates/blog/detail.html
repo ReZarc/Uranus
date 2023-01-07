@@ -8,7 +8,7 @@
         <a> {{ post.title }}</a>
     </h1>
     <div class=" is-size-7 has-text-grey-light pt-1 pb-1">
-        <span class="mr-3">作者：<a href="{% url 'users:user_profile' post.owner_id %}"}>{{ post.owner }}</a></span> <span>发布日期：{{ post.add_date }}</span> <span>浏览量：{{ post.pv }}</span>
+        <span class="mr-3">作者：<a href="{% url 'users:user_profile' post.owner %}"}>{{ post.owner }}</a></span> <span>发布日期：{{ post.add_date }}</span> <span>浏览量：{{ post.pv }}</span>
     </div>
     <div class="content">
         {{ post.content|safe }}
@@ -75,9 +75,11 @@
         {% for comment in comments %}
             <hr>
             <p>
+            <a href="{% url 'users:user_profile' comment.user %}">
                 <strong style="color: pink">
                     {{ comment.user }}
-                </strong> 于
+                </strong>
+            </a> 于
                 <span style="color: green">
                     {{ comment.created }}
                 </span> 评论：

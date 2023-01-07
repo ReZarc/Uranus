@@ -6,7 +6,7 @@ from django.contrib.auth.backends import ModelBackend  # 身份验证后端
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
 from .forms import LoginForm, RegisterForm, ForgetPwdForm, ModifyPwdForm, UserForm, UserProfileForm
-from .models import EmailVerifyRecord, UserProfile
+from .models import EmailVerifyRecord, UserProfile, User
 from django.core.mail import send_mail
 import random
 import string
@@ -50,8 +50,12 @@ def loginView(request):
             password = form.cleaned_data['password']  # 获取密码
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                login(request, user)
-                return redirect('/')
+                    login(request, user)
+                    if not request.user.is_staff:
+                        messages.error(request, '帐号未激活，清前往注册邮箱查看邮件激活')
+                        logout(request)
+                        return redirect('users:login')
+                    return redirect('/')
             else:
                 messages.error(request, '帐号或密码错误')
                 return redirect('users:login')
@@ -170,11 +174,11 @@ def modify_pwd(request):
     return render(request, 'users/modifypwd.html', context)
 
 
-def user_profile(request, user_id):
-    user = User.objects.get(id=user_id)
-    is_profile = len(UserProfile.objects.filter(owner_id=user_id))
+def user_profile(request, username):
+    user = User.objects.get(username=username)
+    is_profile = len(UserProfile.objects.filter(owner_id=user.id))
     if is_profile:
-        user_profile = UserProfile.objects.get(owner_id=user_id)
+        user_profile = UserProfile.objects.get(owner_id=user.id)
     else :
         user_profile = []
     context = {'user': user, 'user_profile': user_profile}
@@ -200,7 +204,9 @@ def editor_users(request):
             if form.is_valid() and user_profile_form.is_valid():
                 form.save()
                 user_profile_form.save()
-                return redirect('users:user_profile')
+                return redirect('users:user_profile', user.username)
+            else :
+                messages.error(request, '信息格式有误！')
         except UserProfile.DoesNotExist:   # 这里发生错误说明userprofile无数据
             form = UserForm(request.POST, instance=user)    # 默认显示原有数据  保存加修改
             user_profile_form = UserProfileForm(request.POST, request.FILES)  # 空表单，直接获取空表单的数据保存
@@ -211,7 +217,7 @@ def editor_users(request):
                 new_user_profile.owner = request.user
                 new_user_profile.save()
 
-                return redirect('users:user_profile')
+                return redirect('users:user_profile', user.username)
     else:
         try:
             userprofile = user.userprofile

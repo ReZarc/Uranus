@@ -1,5 +1,11 @@
 {% load static category %}
 {% get_hot_pv_post as post_list %}
+{% get_hot_post as posts %}
+{% for post in posts %}
+    <ul>
+        <li><a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a></li>
+    </ul>
+{% endfor %}
 {% for post in post_list %}
     <ul>
         <li><a href="{% url 'blog:post_detail' post.id %}">{{ post.title }}</a></li>

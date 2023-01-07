@@ -31,8 +31,8 @@
                         </header>
                         <div class="card-content menu">
                             <ul class="content menu-list">
-                                <li><a href="{% url 'users:user_profile' user.id %}">个人信息</a></li>
-                                {% if user.is_authenticated %}
+                                <li><a href="{% url 'users:user_profile' user.username %}">个人信息</a></li>
+                                {% if request.user.is_authenticated %}
                                     {% if user.id == request.user.id %}
                                         <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
                                     {% else %}
@@ -40,12 +40,10 @@
                                             {% if user.userprofile.get_gender_display == '男' %}
                                                 <li><a href="{% url 'blog:post_list' user.id %}">他发布的</a></li>
                                             {% else %}
-                                                {% if user.userprofile.get_gender_display == '女' %}
-                                                    <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
-                                                {% else %}
-                                                    <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
-                                                {% endif %}
+                                                <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
                                             {% endif %}
+                                        {% else %}
+                                            <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
                                         {% endif %}
                                     {% endif %}
                                 {% else %}
@@ -53,12 +51,10 @@
                                         {% if user.userprofile.get_gender_display == '男' %}
                                             <li><a href="{% url 'blog:post_list' user.id %}">他发布的</a></li>
                                         {% else %}
-                                            {% if user.userprofile.get_gender_display == '女' %}
-                                                <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
-                                            {% else %}
-                                                <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
-                                            {% endif %}
+                                            <li><a href="{% url 'blog:post_list' user.id %}">她发布的</a></li>
                                         {% endif %}
+                                    {% else %}
+                                        <li><a href="{% url 'blog:post_list' user.id %}">ta发布的</a></li>
                                     {% endif %}
                                 {% endif %}
                             </ul>
@@ -144,6 +140,14 @@
                         <div class="column">
                             <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
                                 <div class="column is-2">
+                                   <span class=" has-text-grey-light">用户名</span>
+                                </div>
+                                <div class="column is-narrow">
+                                    <span class=" has-text-black-ter">{{ user.username }}</span>
+                                </div>
+                            </div>
+                            <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
+                                <div class="column is-2">
                                    <span class=" has-text-grey-light">昵称</span>
                                 </div>
                                     <div class="column is-narrow">
@@ -159,6 +163,7 @@
                                 </div> -->
 
                             </div>
+
                             <div class="columns is-mobile" style="border-bottom: #ededed solid 1px">
                                 <div class="column is-2">
                                    <span class=" has-text-grey-light">性别</span>

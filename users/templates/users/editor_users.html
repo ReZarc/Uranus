@@ -21,7 +21,7 @@
                         </header>
                         <div class="card-content menu">
                             <ul class="content menu-list">
-                                <li><a href="{% url 'users:my_profile' %}">个人信息</a></li>
+                                <li><a href="{% url 'users:user_profile' user.username %}">个人信息</a></li>
                                 <li><a href="{% url 'users:modify_pwd' %}">修改密码</a></li>
 
                             </ul>

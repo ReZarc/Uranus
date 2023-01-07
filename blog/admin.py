@@ -8,6 +8,7 @@ admin.site.register(Tag)
 admin.site.register(Sidebar)
 admin.site.register(Comment)
 
+
 class PostAdmin(admin.ModelAdmin):
     """ 文章详情管理 """
 
