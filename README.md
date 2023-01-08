@@ -49,4 +49,8 @@ settings.py、users/views.send_register_email中服务器邮箱和密码请修�
 
 评论删除
 
-通过ckeditor渲染
+通过 ckeditor 渲染
+
+### 后台相关
+
+采用 Django 自带的 admin 路由进行管理。
