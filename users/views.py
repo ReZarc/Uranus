@@ -157,13 +157,17 @@ def forget_pwd_url(request, active_code):
         form = ModifyPwdForm(request.POST)
         if form.is_valid():
             record = EmailVerifyRecord.objects.get(code=active_code)
-            email = record.email
-            user = User.objects.get(email=email)
-            user.password = make_password(form.cleaned_data.get('password'))
-            user.save()
-            messages.error(request, '修改成功')
-            EmailVerifyRecord.objects.get(code=active_code).delete()
-            return redirect('/')
+            if record:
+                email = record.email
+                user = User.objects.get(email=email)
+                user.password = make_password(form.cleaned_data.get('password'))
+                user.save()
+                messages.error(request, '修改成功')
+                EmailVerifyRecord.objects.get(code=active_code).delete()
+                return redirect('users:login')
+            else:
+                messages.error(request, '链接有误')
+                return redirect('/')
         else:
             messages.error(request, '修改失败')
             return redirect('users:forget_pwd_url')
