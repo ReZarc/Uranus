@@ -21,7 +21,7 @@ def get_sidebar_list():
 @register.simple_tag
 def get_new_post():
     # 最新文章
-    return Post.objects.order_by('-pub_date')[:5]
+    return Post.objects.order_by('-add_date')[:5]
 
 
 @register.simple_tag
