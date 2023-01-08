@@ -100,7 +100,7 @@ def send_register_email(email, send_type='register'):
         email_title = '博客的注册激活链接'
         email_body = '请点击以下链接激活账号：http://127.0.0.1:8000/users/active/{0}'.format(code)
 
-        send_status = send_mail(email_title, email_body, 'rezarc@qq.com', [email])
+        send_status = send_mail(email_title, email_body, 'xxxxxx@qq.com', [email])
         if send_status:
             pass
 
@@ -108,7 +108,7 @@ def send_register_email(email, send_type='register'):
         email_title = '找回密码链接'
         email_body = '请点击以下链接修改密码：http://127.0.0.1:8000/users/forget_pwd_url/{0}'.format(code)
 
-        send_status = send_mail(email_title, email_body, 'rezarc@qq.com', [email])
+        send_status = send_mail(email_title, email_body, 'xxxxxx@qq.com', [email])
         if send_status:
             pass
 

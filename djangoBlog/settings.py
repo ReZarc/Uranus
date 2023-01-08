@@ -130,9 +130,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_HOST = 'smtp.qq.com'    # 发送邮件的服务器主机
+EMAIL_HOST = 'smtp.qq.com'  # 发送邮件的服务器主机
 EMAIL_HOST_USER = 'xxxxxx@qq.com'  # 自己的邮箱
-EMAIL_HOST_PASSWORD = 'xxxxxxxxxx' # 自己的HOST密码
-EMAIL_PORT = 465                    # 服务器端口
-EMAIL_USE_SSL = True                # 是否使用隐式安全链接
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST_PASSWORD = 'xxxxxxxxxx'  # 自己的HOST密码
+EMAIL_PORT = 465  # 服务器端口
+EMAIL_USE_SSL = True  # 是否使用隐式安全链接
+
+# 通过终端模拟实现，修改完邮箱和密码后记得注释掉
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
