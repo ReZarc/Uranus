@@ -1,7 +1,6 @@
 from django.contrib import messages
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib.auth.backends import ModelBackend  # 身份验证后端
 from django.db.models import Q
 from django.contrib.auth.hashers import make_password
@@ -49,12 +48,12 @@ def loginView(request):
             password = form.cleaned_data['password']  # 获取密码
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                    login(request, user)
-                    if not request.user.is_staff:
-                        messages.error(request, '帐号未激活，清前往注册邮箱查看邮件激活')
-                        logout(request)
-                        return redirect('users:login')
-                    return redirect('/')
+                login(request, user)
+                if not request.user.is_staff:
+                    messages.error(request, '帐号未激活，清前往注册邮箱查看邮件激活')
+                    logout(request)
+                    return redirect('users:login')
+                return redirect('/')
             else:
                 messages.error(request, '帐号或密码错误')
                 return redirect('users:login')
@@ -69,7 +68,7 @@ def check_pwd(request):
         form = CheckPwdForm(request.POST)
         if form.is_valid():
             username = request.user.username
-            password = password = form.cleaned_data['password']
+            password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 return redirect('users:modify_pwd')
@@ -100,7 +99,7 @@ def send_register_email(email, send_type='register'):
         email_title = '博客的注册激活链接'
         email_body = '请点击以下链接激活账号：http://127.0.0.1:8000/users/active/{0}'.format(code)
 
-        send_status = send_mail(email_title, email_body, 'xxxxxx@qq.com', [email])
+        send_status = send_mail(email_title, email_body, 'rezarc@qq.com', [email])
         if send_status:
             pass
 
@@ -108,7 +107,7 @@ def send_register_email(email, send_type='register'):
         email_title = '找回密码链接'
         email_body = '请点击以下链接修改密码：http://127.0.0.1:8000/users/forget_pwd_url/{0}'.format(code)
 
-        send_status = send_mail(email_title, email_body, 'xxxxxx@qq.com', [email])
+        send_status = send_mail(email_title, email_body, 'rezarc@qq.com', [email])
         if send_status:
             pass
 
@@ -151,13 +150,13 @@ def forget_pwd(request):
 
 
 def forget_pwd_url(request, active_code):
-    if request.method != 'POST':
-        form = ModifyPwdForm()
-    else:
-        form = ModifyPwdForm(request.POST)
-        if form.is_valid():
-            record = EmailVerifyRecord.objects.get(code=active_code)
-            if record:
+    record = EmailVerifyRecord.objects.get(code=active_code)
+    if record:
+        if request.method != 'POST':
+            form = ModifyPwdForm()
+        else:
+            form = ModifyPwdForm(request.POST)
+            if form.is_valid():
                 email = record.email
                 user = User.objects.get(email=email)
                 user.password = make_password(form.cleaned_data.get('password'))
@@ -168,9 +167,9 @@ def forget_pwd_url(request, active_code):
             else:
                 messages.error(request, '链接有误')
                 return redirect('/')
-        else:
-            messages.error(request, '修改失败')
-            return redirect('users:forget_pwd_url')
+    else:
+        messages.error(request, '修改失败')
+        return redirect('users:forget_pwd_url')
     context = {'form': form}
     return render(request, 'users/modifypwd.html', context)
 
@@ -186,7 +185,7 @@ def modify_pwd(request):
                 user.password = make_password(form.cleaned_data.get('password'))
                 user.save()
                 messages.error(request, '修改成功')
-            else :
+            else:
                 messages.error(request, '两次密码不相同')
             return redirect('/')
         else:
@@ -201,7 +200,7 @@ def user_profile(request, username):
     is_profile = len(UserProfile.objects.filter(owner_id=user.id))
     if is_profile:
         user_profile = UserProfile.objects.get(owner_id=user.id)
-    else :
+    else:
         user_profile = []
     context = {'user': user, 'user_profile': user_profile}
     return render(request, 'users/user_profile.html', context)
@@ -219,22 +218,19 @@ def editor_users(request):
     if request.method == "POST":
         try:
             userprofile = user.userprofile
-            form = UserForm(request.POST, instance=user)   # 默认显示原有数据  保存加修改
-            user_profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)  # 向表单填充默认数据
-            # UserProfile与User 是一对一的关系，默认没有数据，注册成功后才会在个人中心设置信息
-            # 第一次登录应当是空表单，如果设置了数据以后编辑时应当是修改，应该要默认显示所有的数据
+            form = UserForm(request.POST, instance=user)
+            user_profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
             if form.is_valid() and user_profile_form.is_valid():
                 form.save()
                 user_profile_form.save()
                 return redirect('users:user_profile', user.username)
-            else :
+            else:
                 messages.error(request, '信息格式有误！')
-        except UserProfile.DoesNotExist:   # 这里发生错误说明userprofile无数据
-            form = UserForm(request.POST, instance=user)    # 默认显示原有数据  保存加修改
-            user_profile_form = UserProfileForm(request.POST, request.FILES)  # 空表单，直接获取空表单的数据保存
+        except UserProfile.DoesNotExist:
+            form = UserForm(request.POST, instance=user)
+            user_profile_form = UserProfileForm(request.POST, request.FILES)
             if form.is_valid() and user_profile_form.is_valid():
                 form.save()
-                # commit=False 先不保存，先把数据放在内存中，然后再重新给指定的字段赋值添加进去，提交保存新的数据
                 new_user_profile = user_profile_form.save(commit=False)
                 new_user_profile.owner = request.user
                 new_user_profile.save()
@@ -247,5 +243,5 @@ def editor_users(request):
             user_profile_form = UserProfileForm(instance=userprofile)
         except UserProfile.DoesNotExist:
             form = UserForm(instance=user)
-            user_profile_form = UserProfileForm()  # 显示空表单
+            user_profile_form = UserProfileForm()
     return render(request, 'users/editor_users.html', locals())
